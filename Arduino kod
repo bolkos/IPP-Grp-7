@@ -1,0 +1,86 @@
+int buttonLeft = 8;
+int pinLeft = 3;
+int StateLeft = LOW;
+int readingLeft;
+int prevLeft = HIGH;
+long timeLeft = 0;
+long debounceLeft = 200;
+
+int buttonRight = 9;
+int pinRight = 4;
+int StateRight = LOW;
+int readingRight;
+int prevRight = HIGH;
+long timeRight = 0;
+long debounceRight = 200;
+
+long intervallLeft = 500;
+int ledStateLeft = LOW;
+long prevMillisLeft = 0;
+int ledStateRight = LOW;
+long preMillisRight = 0;
+
+void setup() {
+  pinMode(buttonLeft, INPUT);
+  pinMode(buttonRight, INPUT);
+
+  pinMode(pinLeft, OUTPUT);
+  pinMode(pinRight, OUTPUT);
+}
+
+void loop() {
+  readingLeft = digitalRead(buttonLeft);
+  readingRight = digitalRead(buttonRight);
+
+  unsigned long currentMillis = millis();
+  
+  if(readingLeft == HIGH && prevLeft == LOW && millis() - timeLeft > debounceLeft){
+    if(StateLeft == LOW){
+      StateLeft = HIGH;
+    }else{
+      StateLeft = LOW;
+    }
+    timeLeft == millis();
+  }
+  
+  if(readingRight == HIGH && prevRight == LOW && millis() - timeRight > debounceRight){
+    if(StateRight == LOW){
+      StateRight = HIGH;
+  }else{
+      StateRight = LOW;
+  }
+    timeRight = millis();
+  }
+
+  if(StateLeft == HIGH && currentMillis - prevMillisLeft > intervallLeft){
+      prevMillisLeft = currentMillis;
+      if(ledStateLeft == LOW)
+        ledStateLeft = HIGH;
+      else
+        ledStateLeft = LOW;
+      if(StateRight == HIGH)
+        StateRight = LOW;
+    }
+  if(StateRight == HIGH && currentMillis - preMillisRight > intervallLeft){
+    preMillisRight = currentMillis;
+    if(ledStateRight == LOW)
+      ledStateRight = HIGH;
+    else
+      ledStateRight = LOW;
+    if(StateLeft == HIGH)
+      StateLeft = LOW;
+  }
+  
+  if(StateLeft == LOW){
+    ledStateLeft = LOW;
+  }
+  
+  if(StateRight == LOW){
+    ledStateRight = LOW;
+  }
+
+  digitalWrite(pinLeft, ledStateLeft);
+  digitalWrite(pinRight, ledStateRight);
+  prevLeft = readingLeft;
+  prevRight = readingRight; 
+}
