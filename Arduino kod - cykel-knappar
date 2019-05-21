@@ -1,0 +1,75 @@
+//Kod för Arduino på cykeln/knapparna
+
+//Left
+int leftButton = 9;
+int leftState = LOW;
+int leftRead;
+int leftPrev = HIGH;
+int leftSend = 2;
+long leftTime = 0;
+
+//Right
+int rightButton = 11;
+int rightState = LOW;
+int rightRead;
+int rightPrev = HIGH;
+int rightSend = 3;
+long rightTime = 0;
+
+//Brake
+int brakeButton = 10;
+int brakeRead;
+int brakeState = LOW;
+int brakeSend = 4;
+
+
+long debounce = 200;
+long Time;
+
+void setup() {
+  pinMode(leftButton, INPUT);
+  pinMode(rightButton, INPUT);
+  pinMode(brakeButton, INPUT);
+
+  pinMode(leftSend, OUTPUT);
+  pinMode(rightSend, OUTPUT);
+  pinMode(brakeSend, OUTPUT);
+}
+
+void loop() {
+  leftRead = digitalRead(leftButton);
+  rightRead = digitalRead(rightButton);
+  brakeRead = digitalRead(brakeButton);
+
+  if(leftRead == HIGH && millis() - leftTime > debounce){
+    if(leftState == HIGH)
+      leftState = LOW;
+    else
+      leftState = HIGH;
+    if(rightState == HIGH)
+        rightState = LOW;
+    leftTime = millis();
+  }
+
+  if(rightRead == HIGH && millis() - rightTime > debounce){
+    if(rightState == LOW)
+      rightState = HIGH;
+    else
+      rightState = LOW;
+    if(leftState == HIGH)
+          leftState = LOW;
+   rightTime = millis();
+  }
+
+  if(brakeRead == HIGH)
+    brakeState = HIGH;
+  else
+    brakeState = LOW;
+
+  digitalWrite(leftSend, leftState);
+  digitalWrite(rightSend, rightState);
+  digitalWrite(brakeSend, brakeState);
+
+ 
+ 
+}
