@@ -1,0 +1,74 @@
+//Kod för Arduino på västen/LEDs
+
+//Left
+int leftLed = 3;
+int leftRead = 8;
+int leftRec = LOW;
+int leftState = LOW;
+long leftMillis = 0;
+int leftLedState = LOW;
+
+//Right
+int rightLed = 4;
+int rightRead = 9;
+int rightRec = LOW;
+int rightState = LOW;
+long rightMillis = 0;
+int rightLedState = LOW;
+
+//Brake
+int brakeLed = 5;
+int brakeRec = LOW;
+int brakeLight = 127;
+int brakeRead = 10;
+
+long intervall = 400;
+
+void setup() {
+
+  pinMode(leftLed, OUTPUT);
+  pinMode(rightLed, OUTPUT);
+  pinMode(brakeLed, OUTPUT);
+
+  pinMode(leftRead, INPUT);
+  pinMode(rightRec, INPUT);
+  pinMode(brakeRec, INPUT);
+}
+
+void loop() {
+    leftRec = digitalRead(leftRead);
+    rightRec = digitalRead(rightRead);
+    brakeRec = digitalRead(brakeRead);
+    unsigned long currentMillis = millis();
+    
+    if(leftRec == HIGH && currentMillis - leftMillis > intervall){
+      leftMillis = currentMillis;
+      if(leftLedState == HIGH)
+        leftLedState = LOW;
+      else
+        leftLedState = HIGH;
+    }
+
+    if(leftRec == LOW)
+      leftLedState = LOW;
+
+    if(rightRec == HIGH && currentMillis - rightMillis > intervall){
+        rightMillis = currentMillis;
+        if(rightLedState == LOW)
+          rightLedState = HIGH;
+        else
+          rightLedState = LOW;
+    }
+
+    if(rightRec == LOW)
+      rightLedState = LOW;
+
+    if(brakeRec == HIGH)
+      brakeLight = 254;
+    else
+      brakeLight = 127;
+
+    digitalWrite(leftLed, leftLedState);
+    digitalWrite(rightLed, rightLedState);
+    analogWrite(brakeLed, brakeLight);
+}
